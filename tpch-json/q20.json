@@ -1,0 +1,214 @@
+[
+  {
+    "unify": [
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "p"
+            }
+          },
+          {
+            "p-name": {
+              "xt:lvar": "p-name"
+            }
+          }
+        ],
+        "from": "part"
+      },
+      {
+        "where": [
+          {
+            "args": [
+              {
+                "xt:lvar": "p-name"
+              },
+              "forest%"
+            ],
+            "xt:call": "like"
+          }
+        ]
+      },
+      {
+        "bind": [
+          {
+            "ps-suppkey": {
+              "xt:lvar": "s"
+            }
+          },
+          {
+            "ps-partkey": {
+              "xt:lvar": "p"
+            }
+          },
+          {
+            "ps-availqty": {
+              "xt:lvar": "ps-availqty"
+            }
+          }
+        ],
+        "from": "partsupp"
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "s"
+            }
+          },
+          {
+            "s-nationkey": {
+              "xt:lvar": "n"
+            }
+          },
+          {
+            "s-name": {
+              "xt:lvar": "s-name"
+            }
+          },
+          {
+            "s-address": {
+              "xt:lvar": "s-address"
+            }
+          }
+        ],
+        "from": "supplier"
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "n"
+            }
+          },
+          {
+            "n-name": "CANADA"
+          }
+        ],
+        "from": "nation"
+      },
+      {
+        "where": [
+          {
+            "args": [
+              {
+                "xt:lvar": "ps-availqty"
+              },
+              {
+                "args": [
+                  0.5,
+                  {
+                    "bind": [
+                      [
+                        "s",
+                        "p"
+                      ]
+                    ],
+                    "xt:q": [
+                      {
+                        "unify": [
+                          {
+                            "bind": [
+                              {
+                                "l-partkey": {
+                                  "p": {
+                                    "xt:param": "p"
+                                  }
+                                }
+                              },
+                              {
+                                "l-suppkey": {
+                                  "s": {
+                                    "xt:param": "s"
+                                  }
+                                }
+                              },
+                              {
+                                "l-shipdate": {
+                                  "xt:lvar": "l-shipdate"
+                                }
+                              },
+                              {
+                                "l-quantity": {
+                                  "xt:lvar": "l-quantity"
+                                }
+                              }
+                            ],
+                            "from": "lineitem"
+                          },
+                          {
+                            "where": [
+                              {
+                                "args": [
+                                  {
+                                    "xt:lvar": "l-shipdate"
+                                  },
+                                  {
+                                    "@type": "xt:date",
+                                    "@value": "1994-01-01"
+                                  }
+                                ],
+                                "xt:call": ">="
+                              },
+                              {
+                                "args": [
+                                  {
+                                    "xt:lvar": "l-shipdate"
+                                  },
+                                  {
+                                    "@type": "xt:date",
+                                    "@value": "1995-01-01"
+                                  }
+                                ],
+                                "xt:call": "<"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "aggregate": [
+                          {
+                            "sum-quantity": {
+                              "args": [
+                                {
+                                  "xt:lvar": "l-quantity"
+                                }
+                              ],
+                              "xt:call": "sum"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "xt:call": "*"
+              }
+            ],
+            "xt:call": ">"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "return": [
+      {
+        "s-name": {
+          "xt:lvar": "s-name"
+        }
+      },
+      {
+        "s-address": {
+          "xt:lvar": "s-address"
+        }
+      }
+    ]
+  },
+  {
+    "orderBy": [
+      "s-name"
+    ]
+  }
+]

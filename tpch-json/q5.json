@@ -1,0 +1,185 @@
+[
+  {
+    "unify": [
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "o"
+            }
+          },
+          {
+            "o-custkey": {
+              "xt:lvar": "c"
+            }
+          },
+          {
+            "o-orderdate": {
+              "xt:lvar": "o-orderdate"
+            }
+          }
+        ],
+        "from": "orders"
+      },
+      {
+        "where": [
+          {
+            "args": [
+              {
+                "xt:lvar": "o-orderdate"
+              },
+              {
+                "@type": "xt:date",
+                "@value": "1994-01-01"
+              }
+            ],
+            "xt:call": ">="
+          },
+          {
+            "args": [
+              {
+                "xt:lvar": "o-orderdate"
+              },
+              {
+                "@type": "xt:date",
+                "@value": "1995-01-01"
+              }
+            ],
+            "xt:call": "<"
+          }
+        ]
+      },
+      {
+        "bind": [
+          {
+            "l-orderkey": {
+              "xt:lvar": "o"
+            }
+          },
+          {
+            "l-suppkey": {
+              "xt:lvar": "s"
+            }
+          },
+          {
+            "l-extendedprice": {
+              "xt:lvar": "l-extendedprice"
+            }
+          },
+          {
+            "l-discount": {
+              "xt:lvar": "l-discount"
+            }
+          }
+        ],
+        "from": "lineitem"
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "s"
+            }
+          },
+          {
+            "s-nationkey": {
+              "xt:lvar": "n"
+            }
+          }
+        ],
+        "from": "supplier"
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "c"
+            }
+          },
+          {
+            "c-nationkey": {
+              "xt:lvar": "n"
+            }
+          }
+        ],
+        "from": "customer"
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "n"
+            }
+          },
+          {
+            "n-regionkey": {
+              "xt:lvar": "r"
+            }
+          },
+          {
+            "n-name": {
+              "xt:lvar": "n-name"
+            }
+          }
+        ],
+        "from": "nation"
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "r"
+            }
+          },
+          {
+            "r-name": {
+              "xt:lvar": "region"
+            }
+          }
+        ],
+        "from": "region"
+      }
+    ]
+  },
+  {
+    "aggregate": [
+      {
+        "xt:lvar": "n-name"
+      },
+      {
+        "revenue": {
+          "args": [
+            {
+              "args": [
+                {
+                  "xt:lvar": "l-extendedprice"
+                },
+                {
+                  "args": [
+                    1,
+                    {
+                      "xt:lvar": "l-discount"
+                    }
+                  ],
+                  "xt:call": "-"
+                }
+              ],
+              "xt:call": "*"
+            }
+          ],
+          "xt:call": "sum"
+        }
+      }
+    ]
+  },
+  {
+    "orderBy": [
+      {
+        "dir": "desc",
+        "val": {
+          "xt:lvar": "revenue"
+        }
+      }
+    ]
+  }
+]

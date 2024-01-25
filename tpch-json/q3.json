@@ -1,0 +1,156 @@
+[
+  {
+    "unify": [
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "c"
+            }
+          },
+          {
+            "c-mktsegment": {
+              "xt:lvar": "segment"
+            }
+          }
+        ],
+        "from": "customer"
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "o"
+            }
+          },
+          {
+            "o-custkey": {
+              "xt:lvar": "c"
+            }
+          },
+          {
+            "o-shippriority": {
+              "xt:lvar": "o-shippriority"
+            }
+          },
+          {
+            "o-orderdate": {
+              "xt:lvar": "o-orderdate"
+            }
+          }
+        ],
+        "from": "orders"
+      },
+      {
+        "where": [
+          {
+            "args": [
+              {
+                "xt:lvar": "o-orderdate"
+              },
+              {
+                "@type": "xt:date",
+                "@value": "1995-03-15"
+              }
+            ],
+            "xt:call": "<"
+          }
+        ]
+      },
+      {
+        "bind": [
+          {
+            "l-orderkey": {
+              "xt:lvar": "o"
+            }
+          },
+          {
+            "l-discount": {
+              "xt:lvar": "l-discount"
+            }
+          },
+          {
+            "l-extendedprice": {
+              "xt:lvar": "l-extendedprice"
+            }
+          },
+          {
+            "l-shipdate": {
+              "xt:lvar": "l-shipdate"
+            }
+          }
+        ],
+        "from": "lineitem"
+      },
+      {
+        "where": [
+          {
+            "args": [
+              {
+                "xt:lvar": "l-shipdate"
+              },
+              {
+                "@type": "xt:date",
+                "@value": "1995-03-15"
+              }
+            ],
+            "xt:call": ">"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "aggregate": [
+      {
+        "l-orderkey": {
+          "xt:lvar": "o"
+        }
+      },
+      {
+        "revenue": {
+          "args": [
+            {
+              "args": [
+                {
+                  "xt:lvar": "l-extendedprice"
+                },
+                {
+                  "args": [
+                    1,
+                    {
+                      "xt:lvar": "l-discount"
+                    }
+                  ],
+                  "xt:call": "-"
+                }
+              ],
+              "xt:call": "*"
+            }
+          ],
+          "xt:call": "sum"
+        }
+      },
+      {
+        "xt:lvar": "o-orderdate"
+      },
+      {
+        "xt:lvar": "o-shippriority"
+      }
+    ]
+  },
+  {
+    "orderBy": [
+      {
+        "dir": "desc",
+        "val": {
+          "xt:lvar": "revenue"
+        }
+      },
+      "o-orderdate"
+    ]
+  },
+  {
+    "limit": 10
+  }
+]

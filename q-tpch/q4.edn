@@ -1,0 +1,1 @@
+(-> (from :orders [#:xt{:id o} o-orderdate o-orderpriority]) (where (>= o-orderdate #time/date "1993-07-01") (< o-orderdate #time/date "1993-10-01") (exists? (-> (from :lineitem [{:l-orderkey $o} l-commitdate l-receiptdate]) (where (< l-commitdate l-receiptdate))) {:args [o]})) (aggregate o-orderpriority {:order-count (count o)}) (order-by o-orderpriority))

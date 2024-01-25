@@ -1,0 +1,255 @@
+[
+  {
+    "unify": [
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "p"
+            }
+          },
+          {
+            "p-mfgr": {
+              "xt:lvar": "p-mfgr"
+            }
+          },
+          {
+            "p-size": 15
+          },
+          {
+            "p-type": {
+              "xt:lvar": "p-type"
+            }
+          }
+        ],
+        "from": "part"
+      },
+      {
+        "where": [
+          {
+            "args": [
+              {
+                "xt:lvar": "p-type"
+              },
+              "%BRASS"
+            ],
+            "xt:call": "like"
+          }
+        ]
+      },
+      {
+        "bind": [
+          {
+            "ps-partkey": {
+              "xt:lvar": "p"
+            }
+          },
+          {
+            "ps-suppkey": {
+              "xt:lvar": "s"
+            }
+          },
+          {
+            "ps-supplycost": {
+              "xt:lvar": "ps-supplycost"
+            }
+          }
+        ],
+        "from": "partsupp"
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "s"
+            }
+          },
+          {
+            "s-nationkey": {
+              "xt:lvar": "n"
+            }
+          },
+          {
+            "s-acctbal": {
+              "xt:lvar": "s-acctbal"
+            }
+          },
+          {
+            "s-address": {
+              "xt:lvar": "s-address"
+            }
+          },
+          {
+            "s-name": {
+              "xt:lvar": "s-name"
+            }
+          },
+          {
+            "s-phone": {
+              "xt:lvar": "s-phone"
+            }
+          },
+          {
+            "s-comment": {
+              "xt:lvar": "s-comment"
+            }
+          }
+        ],
+        "from": "supplier"
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "n"
+            }
+          },
+          {
+            "n-regionkey": {
+              "xt:lvar": "r"
+            }
+          },
+          {
+            "n-name": {
+              "xt:lvar": "n-name"
+            }
+          }
+        ],
+        "from": "nation"
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "r"
+            }
+          },
+          {
+            "r-name": "EUROPE"
+          }
+        ],
+        "from": "region"
+      },
+      {
+        "where": [
+          {
+            "args": [
+              {
+                "xt:lvar": "ps-supplycost"
+              },
+              {
+                "bind": [
+                  [
+                    "p"
+                  ]
+                ],
+                "xt:q": [
+                  {
+                    "unify": [
+                      {
+                        "bind": [
+                          {
+                            "ps-partkey": {
+                              "p": {
+                                "xt:param": "p"
+                              }
+                            }
+                          },
+                          {
+                            "ps-suppkey": {
+                              "xt:lvar": "s"
+                            }
+                          },
+                          {
+                            "ps-supplycost": {
+                              "xt:lvar": "ps-supplycost"
+                            }
+                          }
+                        ],
+                        "from": "partsupp"
+                      },
+                      {
+                        "bind": [
+                          {
+                            "xt/id": {
+                              "xt:lvar": "s"
+                            }
+                          },
+                          {
+                            "s-nationkey": {
+                              "xt:lvar": "n"
+                            }
+                          }
+                        ],
+                        "from": "supplier"
+                      },
+                      {
+                        "bind": [
+                          {
+                            "xt/id": {
+                              "xt:lvar": "n"
+                            }
+                          },
+                          {
+                            "n-regionkey": {
+                              "xt:lvar": "r"
+                            }
+                          }
+                        ],
+                        "from": "nation"
+                      },
+                      {
+                        "bind": [
+                          {
+                            "xt/id": {
+                              "xt:lvar": "r"
+                            }
+                          },
+                          {
+                            "r-name": "EUROPE"
+                          }
+                        ],
+                        "from": "region"
+                      }
+                    ]
+                  },
+                  {
+                    "aggregate": [
+                      {
+                        "min-supplycost": {
+                          "args": [
+                            {
+                              "xt:lvar": "ps-supplycost"
+                            }
+                          ],
+                          "xt:call": "min"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "xt:call": "="
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "orderBy": [
+      {
+        "dir": "desc",
+        "val": {
+          "xt:lvar": "s-acctbal"
+        }
+      },
+      "n-name",
+      "s-name",
+      "p"
+    ]
+  },
+  {
+    "limit": 100
+  }
+]

@@ -1,0 +1,141 @@
+[
+  {
+    "unify": [
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "p"
+            }
+          },
+          {
+            "p-brand": "Brand#23"
+          },
+          {
+            "p-container": "MED BOX"
+          }
+        ],
+        "from": "part"
+      },
+      {
+        "bind": [
+          {
+            "l-partkey": {
+              "xt:lvar": "p"
+            }
+          },
+          {
+            "l-quantity": {
+              "xt:lvar": "l-quantity"
+            }
+          },
+          {
+            "l-extendedprice": {
+              "xt:lvar": "l-extendedprice"
+            }
+          }
+        ],
+        "from": "lineitem"
+      },
+      {
+        "bind": [
+          {
+            "args": [
+              "p"
+            ],
+            "bind": [
+              {
+                "avg-quantity": {
+                  "xt:lvar": "avg-quantity"
+                }
+              }
+            ]
+          }
+        ],
+        "join": [
+          {
+            "bind": [
+              {
+                "l-partkey": {
+                  "p": {
+                    "xt:param": "p"
+                  }
+                }
+              },
+              {
+                "l-quantity": {
+                  "xt:lvar": "l-quantity"
+                }
+              }
+            ],
+            "from": "lineitem"
+          },
+          {
+            "aggregate": [
+              {
+                "avg-quantity": {
+                  "args": [
+                    {
+                      "xt:lvar": "l-quantity"
+                    }
+                  ],
+                  "xt:call": "avg"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "where": [
+          {
+            "args": [
+              {
+                "xt:lvar": "l-quantity"
+              },
+              {
+                "args": [
+                  0.2,
+                  {
+                    "xt:lvar": "avg-quantity"
+                  }
+                ],
+                "xt:call": "*"
+              }
+            ],
+            "xt:call": "<"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "aggregate": [
+      {
+        "sum-extendedprice": {
+          "args": [
+            {
+              "xt:lvar": "l-extendedprice"
+            }
+          ],
+          "xt:call": "sum"
+        }
+      }
+    ]
+  },
+  {
+    "return": [
+      {
+        "avg-yearly": {
+          "args": [
+            {
+              "xt:lvar": "sum-extendedprice"
+            },
+            7.0
+          ],
+          "xt:call": "/"
+        }
+      }
+    ]
+  }
+]

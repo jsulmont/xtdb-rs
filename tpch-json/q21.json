@@ -1,0 +1,238 @@
+[
+  {
+    "unify": [
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "n"
+            }
+          },
+          {
+            "n-name": "SAUDI ARABIA"
+          }
+        ],
+        "from": "nation"
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "s"
+            }
+          },
+          {
+            "s-nationkey": {
+              "xt:lvar": "n"
+            }
+          },
+          {
+            "s-name": {
+              "xt:lvar": "s-name"
+            }
+          }
+        ],
+        "from": "supplier"
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "o"
+            }
+          },
+          {
+            "o-orderstatus": "F"
+          }
+        ],
+        "from": "orders"
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "l1"
+            }
+          },
+          {
+            "l-suppkey": {
+              "xt:lvar": "s"
+            }
+          },
+          {
+            "l-orderkey": {
+              "xt:lvar": "o"
+            }
+          },
+          {
+            "l-receiptdate": {
+              "xt:lvar": "l-receiptdate"
+            }
+          },
+          {
+            "l-commitdate": {
+              "xt:lvar": "l-commitdate"
+            }
+          }
+        ],
+        "from": "lineitem"
+      }
+    ]
+  },
+  {
+    "where": [
+      {
+        "args": [
+          {
+            "xt:lvar": "l-receiptdate"
+          },
+          {
+            "xt:lvar": "l-commitdate"
+          }
+        ],
+        "xt:call": ">"
+      },
+      {
+        "bind": [
+          [
+            "o",
+            "s"
+          ]
+        ],
+        "xt:exists": [
+          {
+            "bind": [
+              {
+                "l-orderkey": {
+                  "xt:lvar": "o"
+                }
+              },
+              {
+                "l-suppkey": {
+                  "xt:lvar": "l2s"
+                }
+              }
+            ],
+            "from": "lineitem"
+          },
+          {
+            "where": [
+              {
+                "args": [
+                  {
+                    "s": {
+                      "xt:param": "s"
+                    }
+                  },
+                  {
+                    "xt:lvar": "l2s"
+                  }
+                ],
+                "xt:call": "<>"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "args": [
+          {
+            "bind": [
+              [
+                "o",
+                "s"
+              ]
+            ],
+            "xt:exists": [
+              {
+                "bind": [
+                  {
+                    "l-orderkey": {
+                      "xt:lvar": "o"
+                    }
+                  },
+                  {
+                    "l-suppkey": {
+                      "xt:lvar": "l3s"
+                    }
+                  },
+                  {
+                    "l-receiptdate": {
+                      "xt:lvar": "l-receiptdate"
+                    }
+                  },
+                  {
+                    "l-commitdate": {
+                      "xt:lvar": "l-commitdate"
+                    }
+                  }
+                ],
+                "from": "lineitem"
+              },
+              {
+                "where": [
+                  {
+                    "args": [
+                      {
+                        "s": {
+                          "xt:param": "s"
+                        }
+                      },
+                      {
+                        "xt:lvar": "l3s"
+                      }
+                    ],
+                    "xt:call": "<>"
+                  },
+                  {
+                    "args": [
+                      {
+                        "xt:lvar": "l-receiptdate"
+                      },
+                      {
+                        "xt:lvar": "l-commitdate"
+                      }
+                    ],
+                    "xt:call": ">"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "xt:call": "not"
+      }
+    ]
+  },
+  {
+    "aggregate": [
+      {
+        "xt:lvar": "s-name"
+      },
+      {
+        "numwait": {
+          "args": [
+            {
+              "xt:lvar": "l1"
+            }
+          ],
+          "xt:call": "count"
+        }
+      }
+    ]
+  },
+  {
+    "orderBy": [
+      {
+        "dir": "desc",
+        "val": {
+          "xt:lvar": "numwait"
+        }
+      },
+      "s-name"
+    ]
+  },
+  {
+    "limit": 100
+  }
+]

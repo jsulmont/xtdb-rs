@@ -1,0 +1,192 @@
+[
+  {
+    "bind": [
+      {
+        "l-shipdate": {
+          "xt:lvar": "l-shipdate"
+        }
+      },
+      {
+        "l-quantity": {
+          "xt:lvar": "l-quantity"
+        }
+      },
+      {
+        "l-extendedprice": {
+          "xt:lvar": "l-extendedprice"
+        }
+      },
+      {
+        "l-discount": {
+          "xt:lvar": "l-discount"
+        }
+      },
+      {
+        "l-tax": {
+          "xt:lvar": "l-tax"
+        }
+      },
+      {
+        "l-returnflag": {
+          "xt:lvar": "l-returnflag"
+        }
+      },
+      {
+        "l-linestatus": {
+          "xt:lvar": "l-linestatus"
+        }
+      }
+    ],
+    "from": "lineitem"
+  },
+  {
+    "where": [
+      {
+        "args": [
+          {
+            "xt:lvar": "l-shipdate"
+          },
+          {
+            "@type": "xt:date",
+            "@value": "1998-09-02"
+          }
+        ],
+        "xt:call": "<="
+      }
+    ]
+  },
+  {
+    "aggregate": [
+      {
+        "xt:lvar": "l-returnflag"
+      },
+      {
+        "xt:lvar": "l-linestatus"
+      },
+      {
+        "sum-qty": {
+          "args": [
+            {
+              "xt:lvar": "l-quantity"
+            }
+          ],
+          "xt:call": "sum"
+        }
+      },
+      {
+        "sum-base-price": {
+          "args": [
+            {
+              "xt:lvar": "l-extendedprice"
+            }
+          ],
+          "xt:call": "sum"
+        }
+      },
+      {
+        "sum-disc-price": {
+          "args": [
+            {
+              "args": [
+                {
+                  "xt:lvar": "l-extendedprice"
+                },
+                {
+                  "args": [
+                    1,
+                    {
+                      "xt:lvar": "l-discount"
+                    }
+                  ],
+                  "xt:call": "-"
+                }
+              ],
+              "xt:call": "*"
+            }
+          ],
+          "xt:call": "sum"
+        }
+      },
+      {
+        "sum-charge": {
+          "args": [
+            {
+              "args": [
+                {
+                  "args": [
+                    {
+                      "xt:lvar": "l-extendedprice"
+                    },
+                    {
+                      "args": [
+                        1,
+                        {
+                          "xt:lvar": "l-discount"
+                        }
+                      ],
+                      "xt:call": "-"
+                    }
+                  ],
+                  "xt:call": "*"
+                },
+                {
+                  "args": [
+                    1,
+                    {
+                      "xt:lvar": "l-tax"
+                    }
+                  ],
+                  "xt:call": "+"
+                }
+              ],
+              "xt:call": "*"
+            }
+          ],
+          "xt:call": "sum"
+        }
+      },
+      {
+        "avg-qty": {
+          "args": [
+            {
+              "xt:lvar": "l-quantity"
+            }
+          ],
+          "xt:call": "avg"
+        }
+      },
+      {
+        "avg-price": {
+          "args": [
+            {
+              "xt:lvar": "l-extendedprice"
+            }
+          ],
+          "xt:call": "avg"
+        }
+      },
+      {
+        "avg-disc": {
+          "args": [
+            {
+              "xt:lvar": "l-discount"
+            }
+          ],
+          "xt:call": "avg"
+        }
+      },
+      {
+        "count-order": {
+          "args": [],
+          "xt:call": "row-count"
+        }
+      }
+    ]
+  },
+  {
+    "orderBy": [
+      "l-returnflag",
+      "l-linestatus"
+    ]
+  }
+]

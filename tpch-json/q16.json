@@ -1,0 +1,168 @@
+[
+  {
+    "unify": [
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "p"
+            }
+          },
+          {
+            "p-brand": {
+              "xt:lvar": "p-brand"
+            }
+          },
+          {
+            "p-type": {
+              "xt:lvar": "p-type"
+            }
+          },
+          {
+            "p-size": {
+              "xt:lvar": "p-size"
+            }
+          }
+        ],
+        "from": "part"
+      },
+      {
+        "where": [
+          {
+            "args": [
+              {
+                "xt:lvar": "p-size"
+              },
+              {
+                "xt:lvar": "sizes"
+              }
+            ],
+            "xt:call": "in?"
+          },
+          {
+            "args": [
+              {
+                "xt:lvar": "p-brand"
+              },
+              "Brand#45"
+            ],
+            "xt:call": "<>"
+          },
+          {
+            "args": [
+              {
+                "args": [
+                  {
+                    "xt:lvar": "p-type"
+                  },
+                  "MEDIUM POLISHED%"
+                ],
+                "xt:call": "like"
+              }
+            ],
+            "xt:call": "not"
+          }
+        ]
+      },
+      {
+        "bind": [
+          {
+            "ps-partkey": {
+              "xt:lvar": "p"
+            }
+          },
+          {
+            "ps-suppkey": {
+              "xt:lvar": "s"
+            }
+          }
+        ],
+        "from": "partsupp"
+      },
+      {
+        "where": [
+          {
+            "args": [
+              {
+                "bind": [
+                  [
+                    "s"
+                  ]
+                ],
+                "xt:exists": [
+                  {
+                    "bind": [
+                      {
+                        "xt/id": {
+                          "s": {
+                            "xt:param": "s"
+                          }
+                        }
+                      },
+                      {
+                        "s-comment": {
+                          "xt:lvar": "s-comment"
+                        }
+                      }
+                    ],
+                    "from": "supplier"
+                  },
+                  {
+                    "where": [
+                      {
+                        "args": [
+                          "%Customer%Complaints%",
+                          {
+                            "xt:lvar": "s-comment"
+                          }
+                        ],
+                        "xt:call": "like"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "xt:call": "not"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "aggregate": [
+      {
+        "xt:lvar": "p-brand"
+      },
+      {
+        "xt:lvar": "p-type"
+      },
+      {
+        "xt:lvar": "p-size"
+      },
+      {
+        "supplier-cnt": {
+          "args": [
+            {
+              "xt:lvar": "s"
+            }
+          ],
+          "xt:call": "count-distinct"
+        }
+      }
+    ]
+  },
+  {
+    "orderBy": [
+      {
+        "dir": "desc",
+        "val": {
+          "xt:lvar": "supplier-cnt"
+        }
+      },
+      "p-brand",
+      "p-type",
+      "p-size"
+    ]
+  }
+]

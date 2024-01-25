@@ -1,0 +1,199 @@
+[
+  {
+    "unify": [
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "p"
+            }
+          },
+          {
+            "p-name": {
+              "xt:lvar": "p-name"
+            }
+          }
+        ],
+        "from": "part"
+      },
+      {
+        "where": [
+          {
+            "args": [
+              {
+                "xt:lvar": "p-name"
+              },
+              "%green%"
+            ],
+            "xt:call": "like"
+          }
+        ]
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "o"
+            }
+          },
+          {
+            "o-orderdate": {
+              "xt:lvar": "o-orderdate"
+            }
+          }
+        ],
+        "from": "orders"
+      },
+      {
+        "bind": [
+          {
+            "l-orderkey": {
+              "xt:lvar": "o"
+            }
+          },
+          {
+            "l-suppkey": {
+              "xt:lvar": "s"
+            }
+          },
+          {
+            "l-partkey": {
+              "xt:lvar": "p"
+            }
+          },
+          {
+            "l-quantity": {
+              "xt:lvar": "l-quantity"
+            }
+          },
+          {
+            "l-extendedprice": {
+              "xt:lvar": "l-extendedprice"
+            }
+          },
+          {
+            "l-discount": {
+              "xt:lvar": "l-discount"
+            }
+          }
+        ],
+        "from": "lineitem"
+      },
+      {
+        "bind": [
+          {
+            "ps-partkey": {
+              "xt:lvar": "p"
+            }
+          },
+          {
+            "ps-suppkey": {
+              "xt:lvar": "s"
+            }
+          },
+          {
+            "ps-supplycost": {
+              "xt:lvar": "ps-supplycost"
+            }
+          }
+        ],
+        "from": "partsupp"
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "s"
+            }
+          },
+          {
+            "s-nationkey": {
+              "xt:lvar": "n"
+            }
+          }
+        ],
+        "from": "supplier"
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "n"
+            }
+          },
+          {
+            "n-name": {
+              "xt:lvar": "nation"
+            }
+          }
+        ],
+        "from": "nation"
+      }
+    ]
+  },
+  {
+    "with": [
+      {
+        "o-year": {
+          "args": [
+            "YEAR",
+            {
+              "xt:lvar": "o-orderdate"
+            }
+          ],
+          "xt:call": "extract"
+        }
+      }
+    ]
+  },
+  {
+    "aggregate": [
+      {
+        "xt:lvar": "nation"
+      },
+      {
+        "xt:lvar": "o-year"
+      },
+      {
+        "sum-profit": {
+          "args": [
+            {
+              "args": [
+                {
+                  "args": [
+                    {
+                      "xt:lvar": "l-extendedprice"
+                    },
+                    {
+                      "args": [
+                        1,
+                        {
+                          "xt:lvar": "l-discount"
+                        }
+                      ],
+                      "xt:call": "-"
+                    }
+                  ],
+                  "xt:call": "*"
+                },
+                {
+                  "args": [
+                    {
+                      "xt:lvar": "ps-supplycost"
+                    },
+                    {
+                      "xt:lvar": "l-quantity"
+                    }
+                  ],
+                  "xt:call": "*"
+                }
+              ],
+              "xt:call": "-"
+            }
+          ],
+          "xt:call": "sum"
+        }
+      }
+    ]
+  }
+]

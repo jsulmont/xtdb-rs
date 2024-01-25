@@ -1,0 +1,194 @@
+[
+  {
+    "unify": [
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "o"
+            }
+          },
+          {
+            "o-custkey": {
+              "xt:lvar": "c"
+            }
+          },
+          {
+            "o-orderdate": {
+              "xt:lvar": "o-orderdate"
+            }
+          }
+        ],
+        "from": "orders"
+      },
+      {
+        "where": [
+          {
+            "args": [
+              {
+                "xt:lvar": "o-orderdate"
+              },
+              {
+                "@type": "xt:date",
+                "@value": "1993-10-01"
+              }
+            ],
+            "xt:call": ">="
+          },
+          {
+            "args": [
+              {
+                "xt:lvar": "o-orderdate"
+              },
+              {
+                "@type": "xt:date",
+                "@value": "1994-01-01"
+              }
+            ],
+            "xt:call": "<"
+          }
+        ]
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "c"
+            }
+          },
+          {
+            "c-nationkey": {
+              "xt:lvar": "n"
+            }
+          },
+          {
+            "c-name": {
+              "xt:lvar": "c-name"
+            }
+          },
+          {
+            "c-address": {
+              "xt:lvar": "c-address"
+            }
+          },
+          {
+            "c-phone": {
+              "xt:lvar": "c-phone"
+            }
+          },
+          {
+            "c-acctbal": {
+              "xt:lvar": "c-acctbal"
+            }
+          },
+          {
+            "c-comment": {
+              "xt:lvar": "c-comment"
+            }
+          }
+        ],
+        "from": "customer"
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "n"
+            }
+          },
+          {
+            "n-name": {
+              "xt:lvar": "n-name"
+            }
+          }
+        ],
+        "from": "nation"
+      },
+      {
+        "bind": [
+          {
+            "l-orderkey": {
+              "xt:lvar": "o"
+            }
+          },
+          {
+            "l-returnflag": "R"
+          },
+          {
+            "l-extendedprice": {
+              "xt:lvar": "l-extendedprice"
+            }
+          },
+          {
+            "l-discount": {
+              "xt:lvar": "l-discount"
+            }
+          }
+        ],
+        "from": "lineitem"
+      }
+    ]
+  },
+  {
+    "aggregate": [
+      {
+        "xt:lvar": "c"
+      },
+      {
+        "xt:lvar": "c-name"
+      },
+      {
+        "revenue": {
+          "args": [
+            {
+              "args": [
+                {
+                  "xt:lvar": "l-extendedprice"
+                },
+                {
+                  "args": [
+                    1,
+                    {
+                      "xt:lvar": "l-discount"
+                    }
+                  ],
+                  "xt:call": "-"
+                }
+              ],
+              "xt:call": "*"
+            }
+          ],
+          "xt:call": "sum"
+        }
+      },
+      {
+        "xt:lvar": "c-acctbal"
+      },
+      {
+        "xt:lvar": "c-phone"
+      },
+      {
+        "xt:lvar": "n-name"
+      },
+      {
+        "xt:lvar": "c-address"
+      },
+      {
+        "xt:lvar": "c-comment"
+      }
+    ]
+  },
+  {
+    "orderBy": [
+      {
+        "dir": "desc",
+        "val": {
+          "xt:lvar": "revenue"
+        }
+      }
+    ]
+  },
+  {
+    "limit": 20
+  }
+]

@@ -1,0 +1,166 @@
+[
+  {
+    "unify": [
+      {
+        "bind": [
+          {
+            "l-orderkey": {
+              "xt:lvar": "o"
+            }
+          },
+          {
+            "l-receiptdate": {
+              "xt:lvar": "l-receiptdate"
+            }
+          },
+          {
+            "l-commitdate": {
+              "xt:lvar": "l-commitdate"
+            }
+          },
+          {
+            "l-shipdate": {
+              "xt:lvar": "l-shipdate"
+            }
+          },
+          {
+            "l-shipmode": {
+              "xt:lvar": "l-shipmode"
+            }
+          }
+        ],
+        "from": "lineitem"
+      },
+      {
+        "where": [
+          {
+            "args": [
+              {
+                "xt:lvar": "l-shipmode"
+              },
+              {
+                "ship-modes": {
+                  "xt:param": "ship-modes"
+                }
+              }
+            ],
+            "xt:call": "in?"
+          },
+          {
+            "args": [
+              {
+                "xt:lvar": "l-receiptdate"
+              },
+              {
+                "@type": "xt:date",
+                "@value": "1994-01-01"
+              }
+            ],
+            "xt:call": ">="
+          },
+          {
+            "args": [
+              {
+                "xt:lvar": "l-receiptdate"
+              },
+              {
+                "@type": "xt:date",
+                "@value": "1995-01-01"
+              }
+            ],
+            "xt:call": "<"
+          },
+          {
+            "args": [
+              {
+                "xt:lvar": "l-commitdate"
+              },
+              {
+                "xt:lvar": "l-receiptdate"
+              }
+            ],
+            "xt:call": "<"
+          },
+          {
+            "args": [
+              {
+                "xt:lvar": "l-shipdate"
+              },
+              {
+                "xt:lvar": "l-commitdate"
+              }
+            ],
+            "xt:call": "<"
+          }
+        ]
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "o"
+            }
+          },
+          {
+            "o-orderpriority": {
+              "xt:lvar": "o-orderpriority"
+            }
+          }
+        ],
+        "from": "orders"
+      }
+    ]
+  },
+  {
+    "aggregate": [
+      {
+        "xt:lvar": "l-shipmode"
+      },
+      {
+        "high-line-count": {
+          "args": [
+            {
+              "args": [
+                {
+                  "xt:lvar": "o-orderpriority"
+                },
+                "1-URGENT",
+                1,
+                "2-HIGH",
+                1,
+                0
+              ],
+              "xt:call": "case"
+            }
+          ],
+          "xt:call": "sum"
+        }
+      },
+      {
+        "low-line-count": {
+          "args": [
+            {
+              "args": [
+                {
+                  "xt:lvar": "o-orderpriority"
+                },
+                "1-URGENT",
+                0,
+                "2-HIGH",
+                0,
+                1
+              ],
+              "xt:call": "case"
+            }
+          ],
+          "xt:call": "sum"
+        }
+      }
+    ]
+  },
+  {
+    "orderBy": [
+      "l-shipmode"
+    ]
+  }
+]

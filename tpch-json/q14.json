@@ -1,0 +1,164 @@
+[
+  {
+    "unify": [
+      {
+        "bind": [
+          {
+            "l-partkey": {
+              "xt:lvar": "p"
+            }
+          },
+          {
+            "l-shipdate": {
+              "xt:lvar": "l-shipdate"
+            }
+          },
+          {
+            "l-extendedprice": {
+              "xt:lvar": "l-extendedprice"
+            }
+          },
+          {
+            "l-discount": {
+              "xt:lvar": "l-discount"
+            }
+          }
+        ],
+        "from": "lineitem"
+      },
+      {
+        "where": [
+          {
+            "args": [
+              {
+                "xt:lvar": "l-shipdate"
+              },
+              {
+                "@type": "xt:date",
+                "@value": "1995-09-01"
+              }
+            ],
+            "xt:call": ">="
+          },
+          {
+            "args": [
+              {
+                "xt:lvar": "l-shipdate"
+              },
+              {
+                "@type": "xt:date",
+                "@value": "1995-10-01"
+              }
+            ],
+            "xt:call": "<"
+          }
+        ]
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "p"
+            }
+          },
+          {
+            "p-type": {
+              "xt:lvar": "p-type"
+            }
+          }
+        ],
+        "from": "part"
+      }
+    ]
+  },
+  {
+    "aggregate": [
+      {
+        "promo": {
+          "args": [
+            {
+              "args": [
+                {
+                  "args": [
+                    {
+                      "xt:lvar": "p-type"
+                    },
+                    "PROMO%"
+                  ],
+                  "xt:call": "like"
+                },
+                {
+                  "args": [
+                    {
+                      "xt:lvar": "l-extendedprice"
+                    },
+                    {
+                      "args": [
+                        1,
+                        {
+                          "xt:lvar": "l-discount"
+                        }
+                      ],
+                      "xt:call": "-"
+                    }
+                  ],
+                  "xt:call": "*"
+                },
+                0
+              ],
+              "xt:call": "if"
+            }
+          ],
+          "xt:call": "sum"
+        }
+      },
+      {
+        "total": {
+          "args": [
+            {
+              "args": [
+                {
+                  "xt:lvar": "l-extendedprice"
+                },
+                {
+                  "args": [
+                    1,
+                    {
+                      "xt:lvar": "l-discount"
+                    }
+                  ],
+                  "xt:call": "-"
+                }
+              ],
+              "xt:call": "*"
+            }
+          ],
+          "xt:call": "sum"
+        }
+      }
+    ]
+  },
+  {
+    "return": [
+      {
+        "promo-revenue": {
+          "args": [
+            100,
+            {
+              "args": [
+                {
+                  "xt:lvar": "promo"
+                },
+                {
+                  "xt:lvar": "total"
+                }
+              ],
+              "xt:call": "/"
+            }
+          ],
+          "xt:call": "*"
+        }
+      }
+    ]
+  }
+]

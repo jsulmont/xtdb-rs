@@ -1,0 +1,108 @@
+[
+  {
+    "unify": [
+      {
+        "bind": [
+          {
+            "l-shipdate": {
+              "xt:lvar": "l-shipdate"
+            }
+          },
+          {
+            "l-quantity": {
+              "xt:lvar": "l-quantity"
+            }
+          },
+          {
+            "l-extendedprice": {
+              "xt:lvar": "l-extendedprice"
+            }
+          },
+          {
+            "l-discount": {
+              "xt:lvar": "l-discount"
+            }
+          }
+        ],
+        "from": "lineitem"
+      },
+      {
+        "where": [
+          {
+            "args": [
+              {
+                "xt:lvar": "l-shipdate"
+              },
+              {
+                "@type": "xt:date",
+                "@value": "1994-01-01"
+              }
+            ],
+            "xt:call": ">="
+          },
+          {
+            "args": [
+              {
+                "xt:lvar": "l-shipdate"
+              },
+              {
+                "@type": "xt:date",
+                "@value": "1995-01-01"
+              }
+            ],
+            "xt:call": "<"
+          },
+          {
+            "args": [
+              {
+                "xt:lvar": "l-discount"
+              },
+              0.05
+            ],
+            "xt:call": ">="
+          },
+          {
+            "args": [
+              {
+                "xt:lvar": "l-discount"
+              },
+              0.07
+            ],
+            "xt:call": "<="
+          },
+          {
+            "args": [
+              {
+                "xt:lvar": "l-quantity"
+              },
+              24.0
+            ],
+            "xt:call": "<"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "aggregate": [
+      {
+        "revenue": {
+          "args": [
+            {
+              "args": [
+                {
+                  "xt:lvar": "l-extendedprice"
+                },
+                {
+                  "xt:lvar": "l-discount"
+                }
+              ],
+              "xt:call": "*"
+            }
+          ],
+          "xt:call": "sum"
+        }
+      }
+    ]
+  }
+]

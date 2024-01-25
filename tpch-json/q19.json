@@ -1,0 +1,313 @@
+[
+  {
+    "unify": [
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "p"
+            }
+          },
+          {
+            "p-size": {
+              "xt:lvar": "p-size"
+            }
+          },
+          {
+            "p-brand": {
+              "xt:lvar": "p-brand"
+            }
+          },
+          {
+            "p-container": {
+              "xt:lvar": "p-container"
+            }
+          }
+        ],
+        "from": "part"
+      },
+      {
+        "bind": [
+          {
+            "l-shipinstruct": "DELIVER IN PERSON"
+          },
+          {
+            "l-partkey": {
+              "xt:lvar": "p"
+            }
+          },
+          {
+            "l-shipmode": {
+              "xt:lvar": "l-shipmode"
+            }
+          },
+          {
+            "l-discount": {
+              "xt:lvar": "l-discount"
+            }
+          },
+          {
+            "l-extendedprice": {
+              "xt:lvar": "l-extendedprice"
+            }
+          },
+          {
+            "l-quantity": {
+              "xt:lvar": "l-quantity"
+            }
+          }
+        ],
+        "from": "lineitem"
+      },
+      {
+        "where": [
+          {
+            "args": [
+              {
+                "xt:lvar": "l-shipmode"
+              },
+              {
+                "xt:lvar": "ship-modes"
+              }
+            ],
+            "xt:call": "in?"
+          },
+          {
+            "args": [
+              {
+                "args": [
+                  {
+                    "args": [
+                      {
+                        "xt:lvar": "p-brand"
+                      },
+                      "Brand#12"
+                    ],
+                    "xt:call": "="
+                  },
+                  {
+                    "args": [
+                      {
+                        "xt:lvar": "p-container"
+                      },
+                      {
+                        "@type": "xt:set",
+                        "@value": [
+                          "SM CASE",
+                          "SM BOX",
+                          "SM PKG",
+                          "SM PACK"
+                        ]
+                      }
+                    ],
+                    "xt:call": "in?"
+                  },
+                  {
+                    "args": [
+                      {
+                        "xt:lvar": "l-quantity"
+                      },
+                      1.0
+                    ],
+                    "xt:call": ">="
+                  },
+                  {
+                    "args": [
+                      {
+                        "xt:lvar": "l-quantity"
+                      },
+                      11.0
+                    ],
+                    "xt:call": "<="
+                  },
+                  {
+                    "args": [
+                      {
+                        "xt:lvar": "p-size"
+                      },
+                      1
+                    ],
+                    "xt:call": ">="
+                  },
+                  {
+                    "args": [
+                      {
+                        "xt:lvar": "p-size"
+                      },
+                      5
+                    ],
+                    "xt:call": "<="
+                  }
+                ],
+                "xt:call": "and"
+              },
+              {
+                "args": [
+                  {
+                    "args": [
+                      {
+                        "xt:lvar": "p-brand"
+                      },
+                      "Brand#23"
+                    ],
+                    "xt:call": "="
+                  },
+                  {
+                    "args": [
+                      {
+                        "xt:lvar": "p-container"
+                      },
+                      {
+                        "@type": "xt:set",
+                        "@value": [
+                          "MED BAG",
+                          "MED BOX",
+                          "MED PKG",
+                          "MED PACK"
+                        ]
+                      }
+                    ],
+                    "xt:call": "in?"
+                  },
+                  {
+                    "args": [
+                      {
+                        "xt:lvar": "l-quantity"
+                      },
+                      10.0
+                    ],
+                    "xt:call": ">="
+                  },
+                  {
+                    "args": [
+                      {
+                        "xt:lvar": "l-quantity"
+                      },
+                      20.0
+                    ],
+                    "xt:call": "<="
+                  },
+                  {
+                    "args": [
+                      {
+                        "xt:lvar": "p-size"
+                      },
+                      1
+                    ],
+                    "xt:call": ">="
+                  },
+                  {
+                    "args": [
+                      {
+                        "xt:lvar": "p-size"
+                      },
+                      10
+                    ],
+                    "xt:call": "<="
+                  }
+                ],
+                "xt:call": "and"
+              },
+              {
+                "args": [
+                  {
+                    "args": [
+                      {
+                        "xt:lvar": "p-brand"
+                      },
+                      "Brand#34"
+                    ],
+                    "xt:call": "="
+                  },
+                  {
+                    "args": [
+                      {
+                        "xt:lvar": "p-container"
+                      },
+                      {
+                        "@type": "xt:set",
+                        "@value": [
+                          "LG PACK",
+                          "LG CASE",
+                          "LG PKG",
+                          "LG BOX"
+                        ]
+                      }
+                    ],
+                    "xt:call": "in?"
+                  },
+                  {
+                    "args": [
+                      {
+                        "xt:lvar": "l-quantity"
+                      },
+                      20.0
+                    ],
+                    "xt:call": ">="
+                  },
+                  {
+                    "args": [
+                      {
+                        "xt:lvar": "l-quantity"
+                      },
+                      30.0
+                    ],
+                    "xt:call": "<="
+                  },
+                  {
+                    "args": [
+                      {
+                        "xt:lvar": "p-size"
+                      },
+                      1
+                    ],
+                    "xt:call": ">="
+                  },
+                  {
+                    "args": [
+                      {
+                        "xt:lvar": "p-size"
+                      },
+                      15
+                    ],
+                    "xt:call": "<="
+                  }
+                ],
+                "xt:call": "and"
+              }
+            ],
+            "xt:call": "or"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "aggregate": [
+      {
+        "revenue": {
+          "args": [
+            {
+              "args": [
+                {
+                  "xt:lvar": "l-extendedprice"
+                },
+                {
+                  "args": [
+                    1,
+                    {
+                      "xt:lvar": "l-discount"
+                    }
+                  ],
+                  "xt:call": "-"
+                }
+              ],
+              "xt:call": "*"
+            }
+          ],
+          "xt:call": "sum"
+        }
+      }
+    ]
+  }
+]

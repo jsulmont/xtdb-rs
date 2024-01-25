@@ -1,0 +1,167 @@
+/// XTQL is a  Datalog-like EDN based DSL for XTDB 2.x
+/// BEGIN
+// Query
+Query    = _{ Pipeline | SourceOp }
+Pipeline =  { "(" ~ "->" ~ SourceOp ~ TailOp* ~ ")" }
+TailOp   = _{ Aggregate | Limit | Offset | OrderBy | Return | Where | WithTail | Without | UnnestTail }
+SourceOp = _{ From | Rel | Unify }
+
+// SourceOp: from
+From           =  { "(" ~ "from" ~ Table ~ FromOpts ~ ")" }
+Table          =  { keyword }
+FromOpts       =  { FromOptsMap | FromOptionVec }
+FromOptsMap    =  { "{" ~ BindKV ~ TimeKV{0, 2} ~ "}" }
+FromOptionVec  =  { BindSpecs }
+BindKV         =  { ":bind" ~ BindSpecs }
+TimeKV         = _{ ValidTimeKV | SystemTimeKV }
+ValidTimeKV    =  { ":for-valid-time" ~ TemporalFilter }
+SystemTimeKV   =  { ":for-system-time" ~ TemporalFilter }
+TemporalFilter = _{ AtTempFilter | ToTempFilter | FromTempFilter | InTempFilter | AllTempFilter }
+AtTempFilter   =  { "(" ~ "at" ~ Timestamp ~ ")" }
+ToTempFilter   =  { "(" ~ "to" ~ Timestamp ~ ")" }
+FromTempFilter =  { "(" ~ "from" ~ Timestamp ~ ")" }
+InTempFilter   =  { "(" ~ "in" ~ Timestamp ~ Timestamp ~ ")" }
+AllTempFilter  =  { ":all-time" }
+Timestamp      = _{ TaggedValueExpr | String }
+
+// SourceOp: rel
+Rel     =  { "(" ~ "rel" ~ RelExpr ~ BindSpecs ~ ")" }
+RelExpr = _{ Expr }
+
+// SourceOp: unify
+Unify       =  { "(" ~ "unify" ~ UnifyClause+ ~ ")" }
+UnifyClause = _{ From | Rel | WithUnify | UnnestUnify | Where | Join | LeftJoin }
+
+// Where
+Where = { "(" ~ "where" ~ Expr* ~ ")" }
+
+// With
+WithTail      =  { "(" ~ "with" ~ WithTailSpec* ~ ")" }
+WithTailSpec  = _{ WithVar | WithTailMap }
+WithTailMap   =  { "{" ~ Column ~ Expr ~ (","? ~ Column ~ Expr)* ~ "}" }
+WithVar       =  { symbol }
+Column        =  { keyword }
+WithUnify     =  { "(" ~ "with" ~ WithUnifySpec ~ ")" }
+WithUnifySpec = _{ WithVar | WithUnifyMap }
+WithUnifyMap  =  { "{" ~ LogicVar ~ Expr ~ (","? ~ LogicVar ~ Expr)* ~ "}" }
+LogicVar      =  { symbol }
+
+// Unnest
+UnnestTail      = { "(" ~ "unnest" ~ UnnestTailSpec ~ ")" }
+UnnestTailSpec  = { "{" ~ Column ~ Expr ~ "}" }
+UnnestUnify     = { "(" ~ "unnest" ~ UnnestUnifySpec ~ ")" }
+UnnestUnifySpec = { "{" ~ LogicVar ~ Expr ~ "}" }
+
+// Without
+Without = { "(" ~ "without" ~ Column* ~ ")" }
+
+// Join, LeftJoin
+Join        =  { "(" ~ "join" ~ Query ~ JoinOpts ~ ")" }
+LeftJoin    =  { "(" ~ "left-join" ~ Query ~ JoinOpts ~ ")" }
+JoinOpts    = _{ JoinOptsMap | JoinOptsVec }
+JoinOptsVec =  { BindSpecs }
+JoinOptsMap =  { "{" ~ (BindKV ~ ","? ~ ArgsKV? | ArgsKV ~ ","? ~ BindKV?) ~ "}" }
+ArgsKV      =  { ":args" ~ ArgSpecs }
+
+// Aggregate | Limit | Offset | OrderBy | Return
+Aggregate          =  { "(" ~ "aggregate" ~ AggSpec* ~ ")" }
+AggSpec            = _{ GroupingVar | GroupingMap }
+GroupingMap        =  { "{" ~ Column ~ Expr ~ (","? ~ Column ~ Expr)* ~ "}" }
+GroupingVar        =  { symbol }
+Limit              =  { "(" ~ "limit" ~ NonNegativeInteger ~ ")" }
+NonNegativeInteger =  { ASCII_DIGIT+ }
+Offset             =  { "(" ~ "offset" ~ NonNegativeInteger ~ ")" }
+
+OrderBy                 =  { "(" ~ "order-by" ~ OrderBySpec+ ~ ")" }
+OrderBySpec             = _{ OrderByCol | OrderBySpecMap }
+OrderByCol              =  { symbol }
+OrderBySpecMap          =  { "{" ~ (OrderBySpecMapComponent ~ (","? ~ OrderBySpecMapComponent)*)? ~ "}" }
+OrderBySpecMapComponent = _{ OrderBySpecMapVal | OrderBySpecMapDir | OrderBySpecMapNulls }
+OrderBySpecMapVal       =  { ":val" ~ Expr }
+OrderBySpecMapDir       =  { ":dir" ~ Direction }
+OrderBySpecMapNulls     =  { ":nulls" ~ NullOrdering }
+Direction               =  { ":asc" | ":desc" }
+NullOrdering            =  { ":first" | ":last" }
+
+Return     =  { "(" ~ "return" ~ ReturnSpec* ~ ")" }
+ReturnSpec = _{ ReturnVar | ReturnMap }
+ReturnMap  =  { "{" ~ Column ~ Expr ~ ","? ~ (Column ~ Expr)* ~ "}" }
+ReturnVar  =  { symbol }
+
+/// bind and arg specs
+
+ArgSpecs =  { "[" ~ ArgSpec ~ (","? ~ ArgSpec)* ~ "]" }
+ArgSpec  = _{ symbol | MapExpr }
+Args     =  { "{" ~ ":args" ~ ArgSpecs ~ "}" }
+
+BindSpecs         =  { "[" ~ BindSpec ~ (","? ~ BindSpec)* ~ "]" }
+BindSpec          = _{ BindVar | BindMap | NamespacedBindMap }
+NamespacedBindMap =  { "#:" ~ Namespace ~ "{" ~ ((MapKey ~ Expr) ~ (","? ~ (MapKey ~ Expr))*)? ~ "}" }
+BindVar           =  { symbol }
+BindMap           =  { "{" ~ Column ~ Expr ~ (","? ~ Column ~ Expr)* ~ "}" }
+
+// Expression
+Expr               = _{
+    I64
+  | F64
+  | String
+  | Bool
+  | Nil
+  | VectorExpr
+  | MapExpr
+  | SetExpr
+  | ParamExpr
+  | VariableExpr
+  | CallExpr
+  | SubqueryExpr
+  | GetFieldExpr
+  | ExistsExpr
+  | PullExpr
+  | PullManyExpr
+  | TaggedValueExpr
+}
+F64                =  {
+    "-"? ~ ((ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT+ | "." ~ ASCII_DIGIT+ | ASCII_DIGIT+ ~ ".") ~ (("e" | "E") ~ ("-" | "+")? ~ ASCII_DIGIT+)?)
+  | "NaN"
+  | "-"? ~ "Infinity"
+}
+I64                = @{ ASCII_DIGIT+ ~ !("." | ^"e") }
+String             =  { "\"" ~ string_content ~ "\"" }
+Bool               =  { "true" | "false" }
+Nil                =  { "nil" }
+VectorExpr         = _{ EmptyVectorExpr | NonEmptyVectorExpr }
+NonEmptyVectorExpr =  { "[" ~ Expr ~ (","? ~ Expr)* ~ "]" }
+EmptyVectorExpr    =  { "[" ~ "]" }
+
+MapExpr           = _{ EmptyMapExpr | NonEmptyMapExpr | NamespacedMapExpr }
+NonEmptyMapExpr   =  { "{" ~ ((MapKey ~ Expr) ~ (","? ~ (MapKey ~ Expr))*)? ~ "}" }
+NamespacedMapExpr =  { "#:" ~ Namespace ~ "{" ~ ((MapKey ~ Expr) ~ (","? ~ (MapKey ~ Expr))*)? ~ "}" }
+EmptyMapExpr      =  { "{" ~ "}" }
+MapKey            =  { keyword }
+Namespace         =  { symbol }
+
+SetExpr         = _{ EmptySetExpr | NonEmptySetExpr }
+NonEmptySetExpr =  { "#{" ~ Expr ~ (","? ~ Expr)* ~ "}" }
+EmptySetExpr    =  { "#{" ~ "}" }
+ParamExpr       =  { "$" ~ symbol }
+VariableExpr    =  { symbol }
+CallExpr        =  { "(" ~ Function ~ Expr* ~ ")" }
+Function        =  { symbol }
+GetFieldExpr    =  { "(" ~ "." ~ Expr ~ symbol ~ ")" }
+SubqueryExpr    =  { "(" ~ "q" ~ Query ~ Args? ~ ")" }
+ExistsExpr      =  { "(" ~ "exists" ~ "?"? ~ Query ~ Args? ~ ")" }
+PullExpr        =  { "(" ~ "pull" ~ Query ~ Args? ~ ")" }
+PullManyExpr    =  { "(" ~ "pull*" ~ Query ~ Args? ~ ")" }
+TaggedValueExpr =  { "#" ~ symbol ~ Expr }
+
+/// things
+WHITESPACE     = _{ " " | "\t" | "\r" | "\n" }
+special_char   = _{ "!" | "$" | "%" | "&" | "-" | "=" | "^" | "+" | "*" | "<" | ">" | "?" | "_" | "/" }
+identifier     = _{ (ASCII_ALPHA | special_char) ~ (ASCII_ALPHANUMERIC | special_char)* }
+symbol         = @{ identifier }
+keyword        = @{ ":" ~ identifier }
+string_content = @{ (!("\"" | "\\") ~ ANY)* ~ (escape ~ string_content)? }
+escape         = @{ "\\" ~ ("\"" | "\\" | "/" | "b" | "f" | "n" | "r" | "t" | unicode) }
+unicode        = @{ "u" ~ ASCII_HEX_DIGIT{4} }
+
+/// END

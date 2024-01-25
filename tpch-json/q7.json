@@ -1,0 +1,248 @@
+[
+  {
+    "unify": [
+      {
+        "bind": [
+          {
+            "o-custkey": {
+              "xt:lvar": "c"
+            }
+          }
+        ],
+        "from": "orders"
+      },
+      {
+        "bind": [
+          {
+            "l-orderkey": {
+              "xt:lvar": "o"
+            }
+          },
+          {
+            "l-suppkey": {
+              "xt:lvar": "s"
+            }
+          },
+          {
+            "l-shipdate": {
+              "xt:lvar": "l-shipdate"
+            }
+          },
+          {
+            "l-discount": {
+              "xt:lvar": "l-discount"
+            }
+          },
+          {
+            "l-extendedprice": {
+              "xt:lvar": "l-extendedprice"
+            }
+          }
+        ],
+        "from": "lineitem"
+      },
+      {
+        "where": [
+          {
+            "args": [
+              {
+                "xt:lvar": "l-shipdate"
+              },
+              {
+                "@type": "xt:date",
+                "@value": "1995-01-01"
+              }
+            ],
+            "xt:call": ">="
+          },
+          {
+            "args": [
+              {
+                "xt:lvar": "l-shipdate"
+              },
+              {
+                "@type": "xt:date",
+                "@value": "1996-12-31"
+              }
+            ],
+            "xt:call": "<="
+          }
+        ]
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "s"
+            }
+          },
+          {
+            "s-nationkey": {
+              "xt:lvar": "n1"
+            }
+          }
+        ],
+        "from": "supplier"
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "n1"
+            }
+          },
+          {
+            "n-name": {
+              "xt:lvar": "supp-nation"
+            }
+          }
+        ],
+        "from": "nation"
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "c"
+            }
+          },
+          {
+            "c-nationkey": {
+              "xt:lvar": "n2"
+            }
+          }
+        ],
+        "from": "customer"
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "n2"
+            }
+          },
+          {
+            "n-name": {
+              "xt:lvar": "cust-nation"
+            }
+          }
+        ],
+        "from": "nation"
+      },
+      {
+        "where": [
+          {
+            "args": [
+              {
+                "args": [
+                  {
+                    "args": [
+                      "FRANCE",
+                      {
+                        "xt:lvar": "supp-nation"
+                      }
+                    ],
+                    "xt:call": "="
+                  },
+                  {
+                    "args": [
+                      "GERMANY",
+                      {
+                        "xt:lvar": "cust-nation"
+                      }
+                    ],
+                    "xt:call": "="
+                  }
+                ],
+                "xt:call": "and"
+              },
+              {
+                "args": [
+                  {
+                    "args": [
+                      "GERMANY",
+                      {
+                        "xt:lvar": "supp-nation"
+                      }
+                    ],
+                    "xt:call": "="
+                  },
+                  {
+                    "args": [
+                      "FRANCE",
+                      {
+                        "xt:lvar": "cust-nation"
+                      }
+                    ],
+                    "xt:call": "="
+                  }
+                ],
+                "xt:call": "and"
+              }
+            ],
+            "xt:call": "or"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "with": [
+      {
+        "l-year": {
+          "args": [
+            "YEAR",
+            {
+              "xt:lvar": "l-shipdate"
+            }
+          ],
+          "xt:call": "extract"
+        }
+      }
+    ]
+  },
+  {
+    "aggregate": [
+      {
+        "xt:lvar": "supp-nation"
+      },
+      {
+        "xt:lvar": "cust-nation"
+      },
+      {
+        "xt:lvar": "l-year"
+      },
+      {
+        "revenue": {
+          "args": [
+            {
+              "args": [
+                {
+                  "xt:lvar": "l-extendedprice"
+                },
+                {
+                  "args": [
+                    1,
+                    {
+                      "xt:lvar": "l-discount"
+                    }
+                  ],
+                  "xt:call": "-"
+                }
+              ],
+              "xt:call": "*"
+            }
+          ],
+          "xt:call": "sum"
+        }
+      }
+    ]
+  },
+  {
+    "orderBy": [
+      "supp-nation",
+      "cust-nation",
+      "l-year"
+    ]
+  }
+]

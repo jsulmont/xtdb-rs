@@ -1,0 +1,118 @@
+[
+  {
+    "bind": [
+      {
+        "xt/id": {
+          "xt:lvar": "o"
+        }
+      },
+      {
+        "o-orderdate": {
+          "xt:lvar": "o-orderdate"
+        }
+      },
+      {
+        "o-orderpriority": {
+          "xt:lvar": "o-orderpriority"
+        }
+      }
+    ],
+    "from": "orders"
+  },
+  {
+    "where": [
+      {
+        "args": [
+          {
+            "xt:lvar": "o-orderdate"
+          },
+          {
+            "@type": "xt:date",
+            "@value": "1993-07-01"
+          }
+        ],
+        "xt:call": ">="
+      },
+      {
+        "args": [
+          {
+            "xt:lvar": "o-orderdate"
+          },
+          {
+            "@type": "xt:date",
+            "@value": "1993-10-01"
+          }
+        ],
+        "xt:call": "<"
+      },
+      {
+        "bind": [
+          [
+            "o"
+          ]
+        ],
+        "xt:exists": [
+          {
+            "bind": [
+              {
+                "l-orderkey": {
+                  "o": {
+                    "xt:param": "o"
+                  }
+                }
+              },
+              {
+                "l-commitdate": {
+                  "xt:lvar": "l-commitdate"
+                }
+              },
+              {
+                "l-receiptdate": {
+                  "xt:lvar": "l-receiptdate"
+                }
+              }
+            ],
+            "from": "lineitem"
+          },
+          {
+            "where": [
+              {
+                "args": [
+                  {
+                    "xt:lvar": "l-commitdate"
+                  },
+                  {
+                    "xt:lvar": "l-receiptdate"
+                  }
+                ],
+                "xt:call": "<"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "aggregate": [
+      {
+        "xt:lvar": "o-orderpriority"
+      },
+      {
+        "order-count": {
+          "args": [
+            {
+              "xt:lvar": "o"
+            }
+          ],
+          "xt:call": "count"
+        }
+      }
+    ]
+  },
+  {
+    "orderBy": [
+      "o-orderpriority"
+    ]
+  }
+]

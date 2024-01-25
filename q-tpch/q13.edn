@@ -1,0 +1,1 @@
+(-> (unify (from :customer [#:xt{:id c}]) (left-join (unify (from :orders [{:xt/id o, :o-custkey c} o-comment]) (where (not (like o-comment "%special%requests%")))) [c o])) (aggregate c {:c-count (count o)}) (aggregate c-count {:custdist (row-count)}) (order-by {:val custdist, :dir :desc} {:val c-count, :dir :desc}))

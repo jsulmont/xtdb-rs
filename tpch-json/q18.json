@@ -1,0 +1,165 @@
+[
+  {
+    "unify": [
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "c"
+            }
+          },
+          {
+            "c-name": {
+              "xt:lvar": "c-name"
+            }
+          }
+        ],
+        "from": "customer"
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "o"
+            }
+          },
+          {
+            "o-custkey": {
+              "xt:lvar": "c"
+            }
+          },
+          {
+            "o-orderdate": {
+              "xt:lvar": "o-orderdate"
+            }
+          },
+          {
+            "o-totalprice": {
+              "xt:lvar": "o-totalprice"
+            }
+          }
+        ],
+        "from": "orders"
+      }
+    ]
+  },
+  {
+    "where": [
+      {
+        "args": [
+          {
+            "xt:lvar": "o"
+          },
+          {
+            "bind": [],
+            "xt:q": [
+              {
+                "bind": [
+                  {
+                    "l-orderkey": {
+                      "xt:lvar": "o"
+                    }
+                  },
+                  {
+                    "l-quantity": {
+                      "xt:lvar": "l-quantity"
+                    }
+                  }
+                ],
+                "from": "lineitem"
+              },
+              {
+                "aggregate": [
+                  {
+                    "xt:lvar": "o"
+                  },
+                  {
+                    "sum-quantity": {
+                      "args": [
+                        {
+                          "xt:lvar": "l-quantity"
+                        }
+                      ],
+                      "xt:call": "sum"
+                    }
+                  }
+                ]
+              },
+              {
+                "where": [
+                  {
+                    "args": [
+                      {
+                        "xt:lvar": "sum-quantity"
+                      },
+                      300.0
+                    ],
+                    "xt:call": ">"
+                  }
+                ]
+              },
+              {
+                "return": [
+                  {
+                    "o": {
+                      "xt:lvar": "o"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "xt:call": "in?"
+      }
+    ]
+  },
+  {
+    "return": [
+      {
+        "c-name": {
+          "xt:lvar": "c-name"
+        }
+      },
+      {
+        "c-custkey": {
+          "xt:lvar": "c"
+        }
+      },
+      {
+        "o-orderkey": {
+          "xt:lvar": "o"
+        }
+      },
+      {
+        "o-orderdate": {
+          "xt:lvar": "o-orderdate"
+        }
+      },
+      {
+        "o-totalprice": {
+          "xt:lvar": "o-totalprice"
+        }
+      },
+      {
+        "sum-qty": {
+          "xt:lvar": "sum-qty"
+        }
+      }
+    ]
+  },
+  {
+    "orderBy": [
+      {
+        "dir": "desc",
+        "val": {
+          "xt:lvar": "o-totalprice"
+        }
+      },
+      "o-orderdate"
+    ]
+  },
+  {
+    "limit": 100
+  }
+]

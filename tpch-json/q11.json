@@ -1,0 +1,242 @@
+[
+  {
+    "unify": [
+      {
+        "bind": [
+          {
+            "bind": [
+              {
+                "total-value": {
+                  "xt:lvar": "total-value"
+                }
+              }
+            ]
+          }
+        ],
+        "join": [
+          {
+            "unify": [
+              {
+                "bind": [
+                  {
+                    "ps-suppkey": {
+                      "xt:lvar": "s"
+                    }
+                  },
+                  {
+                    "ps-availqty": {
+                      "xt:lvar": "ps-availqty"
+                    }
+                  },
+                  {
+                    "ps-supplycost": {
+                      "xt:lvar": "ps-supplycost"
+                    }
+                  }
+                ],
+                "from": "partsupp"
+              },
+              {
+                "bind": [
+                  {
+                    "xt/id": {
+                      "xt:lvar": "s"
+                    }
+                  },
+                  {
+                    "s-nationkey": {
+                      "xt:lvar": "n"
+                    }
+                  }
+                ],
+                "from": "supplier"
+              },
+              {
+                "bind": [
+                  {
+                    "xt/id": {
+                      "xt:lvar": "n"
+                    }
+                  },
+                  {
+                    "n-name": "GERMANY"
+                  }
+                ],
+                "from": "nation"
+              }
+            ]
+          },
+          {
+            "aggregate": [
+              {
+                "total-value": {
+                  "args": [
+                    {
+                      "args": [
+                        {
+                          "xt:lvar": "ps-supplycost"
+                        },
+                        {
+                          "xt:lvar": "ps-availqty"
+                        }
+                      ],
+                      "xt:call": "*"
+                    }
+                  ],
+                  "xt:call": "sum"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "bind": [
+          {
+            "bind": [
+              {
+                "ps-partkey": {
+                  "xt:lvar": "ps-partkey"
+                }
+              },
+              {
+                "value": {
+                  "xt:lvar": "value"
+                }
+              }
+            ]
+          }
+        ],
+        "join": [
+          {
+            "unify": [
+              {
+                "bind": [
+                  {
+                    "ps-suppkey": {
+                      "xt:lvar": "s"
+                    }
+                  },
+                  {
+                    "ps-availqty": {
+                      "xt:lvar": "ps-availqty"
+                    }
+                  },
+                  {
+                    "ps-supplycost": {
+                      "xt:lvar": "ps-supplycost"
+                    }
+                  },
+                  {
+                    "ps-partkey": {
+                      "xt:lvar": "ps-partkey"
+                    }
+                  }
+                ],
+                "from": "partsupp"
+              },
+              {
+                "bind": [
+                  {
+                    "xt/id": {
+                      "xt:lvar": "s"
+                    }
+                  },
+                  {
+                    "s-nationkey": {
+                      "xt:lvar": "n"
+                    }
+                  }
+                ],
+                "from": "supplier"
+              },
+              {
+                "bind": [
+                  {
+                    "xt/id": {
+                      "xt:lvar": "n"
+                    }
+                  },
+                  {
+                    "n-name": "GERMANY"
+                  }
+                ],
+                "from": "nation"
+              }
+            ]
+          },
+          {
+            "aggregate": [
+              {
+                "xt:lvar": "ps-partkey"
+              },
+              {
+                "value": {
+                  "args": [
+                    {
+                      "args": [
+                        {
+                          "xt:lvar": "ps-supplycost"
+                        },
+                        {
+                          "xt:lvar": "ps-availqty"
+                        }
+                      ],
+                      "xt:call": "*"
+                    }
+                  ],
+                  "xt:call": "sum"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "where": [
+      {
+        "args": [
+          {
+            "xt:lvar": "value"
+          },
+          {
+            "args": [
+              0.0001,
+              {
+                "xt:lvar": "total-value"
+              }
+            ],
+            "xt:call": "*"
+          }
+        ],
+        "xt:call": ">"
+      }
+    ]
+  },
+  {
+    "return": [
+      {
+        "ps-partkey": {
+          "xt:lvar": "ps-partkey"
+        }
+      },
+      {
+        "value": {
+          "xt:lvar": "value"
+        }
+      }
+    ]
+  },
+  {
+    "orderBy": [
+      {
+        "dir": "desc",
+        "val": {
+          "xt:lvar": "value"
+        }
+      }
+    ]
+  }
+]

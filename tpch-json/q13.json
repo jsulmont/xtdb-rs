@@ -1,0 +1,122 @@
+[
+  {
+    "unify": [
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "c"
+            }
+          }
+        ],
+        "from": "customer"
+      },
+      {
+        "bind": [
+          {
+            "bind": [
+              {
+                "c": {
+                  "xt:lvar": "c"
+                }
+              },
+              {
+                "o": {
+                  "xt:lvar": "o"
+                }
+              }
+            ]
+          }
+        ],
+        "leftJoin": {
+          "unify": [
+            {
+              "bind": [
+                {
+                  "xt/id": {
+                    "xt:lvar": "o"
+                  }
+                },
+                {
+                  "o-custkey": {
+                    "xt:lvar": "c"
+                  }
+                },
+                {
+                  "o-comment": {
+                    "xt:lvar": "o-comment"
+                  }
+                }
+              ],
+              "from": "orders"
+            },
+            {
+              "where": [
+                {
+                  "args": [
+                    {
+                      "args": [
+                        {
+                          "xt:lvar": "o-comment"
+                        },
+                        "%special%requests%"
+                      ],
+                      "xt:call": "like"
+                    }
+                  ],
+                  "xt:call": "not"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "aggregate": [
+      {
+        "xt:lvar": "c"
+      },
+      {
+        "c-count": {
+          "args": [
+            {
+              "xt:lvar": "o"
+            }
+          ],
+          "xt:call": "count"
+        }
+      }
+    ]
+  },
+  {
+    "aggregate": [
+      {
+        "xt:lvar": "c-count"
+      },
+      {
+        "custdist": {
+          "args": [],
+          "xt:call": "row-count"
+        }
+      }
+    ]
+  },
+  {
+    "orderBy": [
+      {
+        "dir": "desc",
+        "val": {
+          "xt:lvar": "custdist"
+        }
+      },
+      {
+        "dir": "desc",
+        "val": {
+          "xt:lvar": "c-count"
+        }
+      }
+    ]
+  }
+]

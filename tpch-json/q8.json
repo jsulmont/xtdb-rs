@@ -1,0 +1,264 @@
+[
+  {
+    "unify": [
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "o"
+            }
+          },
+          {
+            "o-custkey": {
+              "xt:lvar": "c"
+            }
+          },
+          {
+            "o-orderdate": {
+              "xt:lvar": "o-orderdate"
+            }
+          }
+        ],
+        "from": "orders"
+      },
+      {
+        "where": [
+          {
+            "args": [
+              {
+                "xt:lvar": "o-orderdate"
+              },
+              {
+                "@type": "xt:date",
+                "@value": "1995-01-01"
+              }
+            ],
+            "xt:call": ">="
+          },
+          {
+            "args": [
+              {
+                "xt:lvar": "o-orderdate"
+              },
+              {
+                "@type": "xt:date",
+                "@value": "1996-12-31"
+              }
+            ],
+            "xt:call": "<="
+          }
+        ]
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "l"
+            }
+          },
+          {
+            "l-orderkey": {
+              "xt:lvar": "o"
+            }
+          },
+          {
+            "l-suppkey": {
+              "xt:lvar": "s"
+            }
+          },
+          {
+            "l-partkey": {
+              "xt:lvar": "p"
+            }
+          },
+          {
+            "l-extendedprice": {
+              "xt:lvar": "l-extendedprice"
+            }
+          },
+          {
+            "l-discount": {
+              "xt:lvar": "l-discount"
+            }
+          }
+        ],
+        "from": "lineitem"
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "c"
+            }
+          },
+          {
+            "c-nationkey": {
+              "xt:lvar": "n1"
+            }
+          }
+        ],
+        "from": "customer"
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "n1"
+            }
+          },
+          {
+            "n-regionkey": {
+              "xt:lvar": "r1"
+            }
+          }
+        ],
+        "from": "nation"
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "r1"
+            }
+          },
+          {
+            "r-name": "AMERICA"
+          }
+        ],
+        "from": "region"
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "s"
+            }
+          },
+          {
+            "s-nationkey": {
+              "xt:lvar": "n2"
+            }
+          }
+        ],
+        "from": "supplier"
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "n2"
+            }
+          },
+          {
+            "n-name": {
+              "xt:lvar": "nation"
+            }
+          }
+        ],
+        "from": "nation"
+      },
+      {
+        "bind": [
+          {
+            "xt/id": {
+              "xt:lvar": "p"
+            }
+          },
+          {
+            "p-type": "ECONOMY ANODIZED STEEL"
+          }
+        ],
+        "from": "part"
+      }
+    ]
+  },
+  {
+    "return": [
+      {
+        "o-year": {
+          "args": [
+            "YEAR",
+            {
+              "xt:lvar": "o-orderdate"
+            }
+          ],
+          "xt:call": "extract"
+        }
+      },
+      {
+        "volume": {
+          "args": [
+            {
+              "xt:lvar": "l-extendedprice"
+            },
+            {
+              "args": [
+                1,
+                {
+                  "xt:lvar": "l-discount"
+                }
+              ],
+              "xt:call": "-"
+            }
+          ],
+          "xt:call": "*"
+        }
+      },
+      {
+        "nation": {
+          "xt:lvar": "nation"
+        }
+      }
+    ]
+  },
+  {
+    "aggregate": [
+      {
+        "xt:lvar": "o-year"
+      },
+      {
+        "mkt-share": {
+          "args": [
+            {
+              "args": [
+                {
+                  "args": [
+                    {
+                      "args": [
+                        "BRAZIL",
+                        {
+                          "xt:lvar": "nation"
+                        }
+                      ],
+                      "xt:call": "="
+                    },
+                    {
+                      "xt:lvar": "volume"
+                    },
+                    0
+                  ],
+                  "xt:call": "if"
+                }
+              ],
+              "xt:call": "sum"
+            },
+            {
+              "args": [
+                {
+                  "xt:lvar": "volume"
+                }
+              ],
+              "xt:call": "sum"
+            }
+          ],
+          "xt:call": "/"
+        }
+      }
+    ]
+  },
+  {
+    "orderBy": [
+      "o-year"
+    ]
+  }
+]
