@@ -77,6 +77,54 @@ Run an XTQL query and view the results in JSON format:
 cat q-tpch/q11.edn | ./xtql_to_json | jq
 ```
 
+#### Executing a query
+
+Assuming you have loaded a TPCH dataset (_e.g.,_ scale 0.05), then you can execute a query as following:
+
+```bash
+cat q-tpch/q2.edn| ./xtdb_query
+```
+, which will produce an output like (some elements ommited):
+```json
+[
+  {
+    "n": "nationkey_7",
+    "n-name": "GERMANY",
+    "p": "partkey_1634",
+    "p-mfgr": "Manufacturer#2",
+    "p-type": "ECONOMY PLATED BRASS",
+    "ps-supplycost": 372.29,
+    "r": "regionkey_3",
+    "s": "suppkey_135",
+    "s-acctbal": 9767.99,
+    "s-address": "F4Uy ZQNU6ESTmO3mrL,mI",
+    "s-comment": "courts wake slyly instructions. furiously silent requests cajol",
+    "s-name": "Supplier#000000135",
+    "s-phone": "17-290-812-8855"
+  },
+  {
+    "n": "nationkey_7",
+    "n-name": "GERMANY",
+    "p": "partkey_2156",
+    "p-mfgr": "Manufacturer#5",
+    "p-type": "LARGE ANODIZED BRASS",
+    "ps-supplycost": 809.04,
+    "r": "regionkey_3",
+    "s": "suppkey_44",
+    "s-acctbal": 9759.38,
+    "s-address": "kERxlLDnlIZJdN66zAPHklyL",
+    "s-comment": "x. carefully quiet account",
+    "s-name": "Supplier#000000044",
+    "s-phone": "17-713-930-5667"
+  },
+  ...
+]
+```
+
+
+
+
+
 ## License
 
 `xtdb-rs` is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
