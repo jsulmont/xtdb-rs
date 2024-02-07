@@ -20,6 +20,46 @@ XTDB 2.x supports two main query languages:
 
 An example of a Common Lisp client using HTTP/Transit+JSON with XTDB is [xtdb-cl](https://github.com/jsulmont/xtdb-cl).
 
+## About XTQL
+
+XTQL is a domain-specific language (DSL) inspired by [Datalog](https://en.wikipedia.org/wiki/Datalog), a declarative logic programming language. XTQL is primarily used with XTDB, offering a unique approach to crafting database queries.
+
+### TL;DR
+Consider the following (valid albeit meaningless) XTQL expression:
+
+```clojure
+(rel
+ {:x (+ 1.77 (- 23 (if (= 0 x) 1 x))),
+  :y (case
+      (:order/status order)
+      "pending"
+      (calculate-pending-total)
+      "completed"
+      (calculate-completed-total)
+      (aggregate-default-action)),
+  :z #inst "1970-01-01T00:00:00.000-00:00"}
+ [x y])
+```
+and try to format and edit the following its JSON counterpart:
+
+```json
+{"args":[{"x":{"args":[1.77,{"args":[23,{"args":[{"args":[0,{"xt:lvar":"x"}],"xt:call":"="},1,{"xt:lvar":"x"}],"xt:call":"if"}],"xt:call":"-"}],"xt:call":"+"},"y":{"args":[{"args":[{"xt:lvar":"order"}],"xt:call":"order/status"},"pending",{"args":[],"xt:call":"calculate-pending-total"},"completed",{"args":[],"xt:call":"calculate-completed-total"},{"args":[],"xt:call":"aggregate-default-action"}],"xt:call":"case"},"z":{"@type":"xt:instant","@value":"1970-01-01"}},[{"xt:lvar":"x"},{"xt:lvar":"y"}]],"xt:call":"rel"}
+```
+
+
+### Key Features of XTQL
+
+- **S-Expression Based**: XTQL leverages s-expressions, the simple and powerful syntactic structure used in Lisp. This design choice makes XTQL not only elegant but also concise, providing a clear and efficient way to represent queries.
+
+- **Elegance and Conciseness**: One of XTQL's standout features is its elegant and concise syntax. It allows users to express complex queries in a more readable and maintainable form, reducing the cognitive load typically associated with verbose query languages.
+
+- **Ease of Reasoning**: For those familiar with Lisp or similar languages, XTQL feels natural and intuitive. Its structure and syntax make it easy to reason about, offering a straightforward way to understand and manipulate complex queries.
+
+- **Inspired by Datalog**: By drawing inspiration from Datalog, XTQL benefits from the strengths of logic programming. This makes it well-suited for queries that involve complex relationships and hierarchical data, where traditional SQL might fall short.
+
+XTQL's design not only facilitates effective database interactions but also aligns with the thought processes of many developers, particularly those accustomed to Lisp-like languages. This alignment makes it an appealing choice for many, offering a blend of simplicity, power, and expressiveness.
+
+
 ## Development Status: Work in Progress
 
 ### Warning: Evolving Project
