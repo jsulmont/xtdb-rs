@@ -1,6 +1,6 @@
 # Rust Driver for XTDB 2.x
 
-`xtdb-rs` is a Rust driver designed for interacting with XTDB 2.x. This project focuses on providing a seamless way to execute XTQL queries and handle transactions within Rust code, ensuring complete parsing of XTQL expressions with meaningful error messages.
+`xtdb-rs` is a Rust driver designed for interacting with XTDB 2.x. This project focuses on providing a seamless way to execute XTQL queries within Rust code, ensuring complete parsing of XTQL expressions with meaningful error messages.
 
 ## Features
 
@@ -11,22 +11,30 @@
 
 ## Current Limitations
 
-- **Incomplete**: Due to time constraints, the project is currently incomplete and lacks comprehensive tests.
-- **Query Focused**: Currently, the driver supports only query operations as per the [XTDB XTQL Query Reference](https://docs.xtdb.com/reference/main/xtql/queries.html). Transaction handling is a planned feature but not yet implemented.
+- **Incomplete**: The project is currently incomplete and lacks comprehensive tests.
+- **Query Focused**: Currently, the driver supports only query operations. Transaction handling is a planned feature.
 
 ## Installation
 
-(Provide instructions for installing the `xtdb-rs` driver in a Rust project.)
+1. **Install Rust**: Follow the instructions to install Rust on your system from [The Rust Programming Language website](https://www.rust-lang.org/learn/get-started).
+2. **Install XTDB 2.x**: To run XTDB locally, refer to the guide on [Running XTDB 2.x Locally](https://docs.xtdb.com/operations-guide/).
+3. **Build the Project**: Clone the repository and build the project using Cargo.
+    ```bash
+    git clone https://github.com/jsulmont/xtdb-rs
+    cd xtdb-rs
+    cargo build
+    ```
 
 ## Usage
 
-`xtdb-rs` offers two primary functionalities:
+`xtdb-rs` offers functionalities to execute XTQL queries and view the results in JSON format or through interactive querying.
 
-1. **Viewing JSON Results**: Execute XTQL queries and view the results in a pretty-printed JSON format.
-2. **Interactive Querying**: Read queries from input and send them to XTDB 2.x.
+### Examples
 
-### Example: Viewing JSON Results
+#### Viewing JSON Results
 
-```rust
-// Example code snippet to demonstrate JSON result viewing.
+Run an XTQL query and view the results in JSON format:
+
+```bash
+cat q-tpch/q11.edn | ./xtql_to_json | jq
 
