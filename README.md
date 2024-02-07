@@ -20,6 +20,18 @@ XTDB 2.x supports two main query languages:
 
 An example of a Common Lisp client using HTTP/Transit+JSON with XTDB is [xtdb-cl](https://github.com/jsulmont/xtdb-cl).
 
+## Development Status: Work in Progress
+
+### Warning: Evolving Project
+
+This project is currently in an active development phase and is considered a work in progress. Users and contributors should be aware of the following aspects:
+
+- **Grammar**: The [grammar](src/xtql/pest/xtql.pest) for parsing XTQL is based on fragments of EBNF found in the XTQL documentation. As such, it is subject to change and evolution. 
+- **`parse_value` Function**: The `parse_value` function is a key part of our parsing logic, and there's a possibility that it may be optimized or refactored in the future. View the function in the repository [here](src/xtql/parse.rs#L86).
+- **Query Parsing Approach**: During development, often the JSON result of calling `parse-query` on some EDN was examined for better understanding and implementation. This process can be reviewed in the XTDB source code [here](https://github.com/xtdb/xtdb/blob/2.x/api/src/main/clojure/xtdb/xtql/edn.clj#L19).
+
+Contributors and users should expect updates and changes as the project progresses. Feedback and contributions are welcome to improve and evolve the project further.
+
 
 ## Features
 
