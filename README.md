@@ -52,6 +52,11 @@ An example of a Common Lisp client using HTTP/Transit+JSON with XTDB is [xtdb-cl
 
 ### Examples
 
+#### Build the examples
+```bash
+cargo build --examples
+```
+
 #### Viewing JSON Results
 
 Run an XTQL query and view the results in JSON format:
