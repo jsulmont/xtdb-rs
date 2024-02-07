@@ -32,7 +32,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         },
         Err(e) => match e {
             CustomError::XtdbError(ref err) => {
-                if let Ok(parsed_json) = serde_json::from_str::<Value>(&err) {
+                if let Ok(parsed_json) = serde_json::from_str::<Value>(err) {
                     eprintln!("Error: {}", serde_json::to_string_pretty(&parsed_json).unwrap());
                 } else {
                     eprintln!("Error: {}", err); // Fallback in case the error is not valid JSON

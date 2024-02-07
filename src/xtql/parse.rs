@@ -226,14 +226,14 @@ pub fn parse_value(pair: Pair<Rule>) -> JSONValue {
         Rule::symbol | Rule::string_content => JSONValue::String(pair.as_str().to_string()),
         Rule::F64 | Rule::I64 => {
             let s = pair.as_str().trim(); // why is this needed?
-            let json_value = if pair.as_rule() == Rule::F64 {
+            
+            if pair.as_rule() == Rule::F64 {
                 let num: f64 = s.parse().expect("Could not parse the string as f64");
                 json!(num)
             } else {
                 let num: i64 = s.parse().expect("Could not parse the string as i64");
                 json!(num)
-            };
-            json_value
+            }
         }
         Rule::Bool => JSONValue::Bool(pair.as_str().parse().unwrap()),
         Rule::Nil => JSONValue::Null,
@@ -273,8 +273,7 @@ pub fn parse_value(pair: Pair<Rule>) -> JSONValue {
                     let val = &chunk[1];
                     json!({ key: val })
                 })
-                .collect::<Vec<_>>()
-                .into();
+                .collect::<Vec<_>>();
             merge_json_objects(rc)
         }
         Rule::NonEmptyVectorExpr => {
@@ -339,8 +338,7 @@ pub fn parse_value(pair: Pair<Rule>) -> JSONValue {
                     let val = &chunk[1];
                     json!({ key: val })
                 })
-                .collect::<Vec<_>>()
-                .into();
+                .collect::<Vec<_>>();
             merge_json_objects(rc)
         }
         Rule::BindMap => {
@@ -354,8 +352,7 @@ pub fn parse_value(pair: Pair<Rule>) -> JSONValue {
                     let val = extract_xt_param_value(&chunk[1]);
                     json!({ key: val })
                 })
-                .collect::<Vec<_>>()
-                .into();
+                .collect::<Vec<_>>();
             json!(rc)
         }
         Rule::Args => {

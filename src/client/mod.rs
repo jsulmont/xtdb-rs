@@ -57,7 +57,7 @@ impl XtdbClient {
         XtdbClient {
             base_url: base_url.to_string(),
             client: Client::new(),
-            headers: headers,
+            headers,
             latest_transaction: Arc::new(RwLock::new(None)),
         }
     }
@@ -109,6 +109,6 @@ impl XtdbClient {
 
     pub async fn get_latest_transaction(&self) -> Option<u64> {
         let latest_transaction = self.latest_transaction.read().await;
-        latest_transaction.clone()
+        *latest_transaction
     }
 }
