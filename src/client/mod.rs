@@ -67,7 +67,7 @@ impl XtdbClient {
             "query": query.query,
             "queryOpts": query.options,
         });
-    
+
         let response = self
             .client
             .post(&url)
@@ -75,7 +75,7 @@ impl XtdbClient {
             .json(&query)
             .send()
             .await;
-    
+
         match response {
             Ok(resp) => {
                 if resp.status().is_success() {
@@ -96,11 +96,10 @@ impl XtdbClient {
                     Err(CustomError::XtdbError(error_body)) // directly return the error body as a string
                 }
             }
-            
+
             Err(err) => Err(CustomError::ReqwestError(err)),
         }
     }
-    
 
     pub async fn set_latest_transaction(&self, transaction_id: u64) {
         let mut latest_transaction = self.latest_transaction.write().await;

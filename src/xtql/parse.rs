@@ -2,7 +2,7 @@ use pest::iterators::Pair;
 use pest::Parser;
 use pest_derive::Parser;
 use serde_json::{json, Map, Value as JSONValue};
-use std::{vec};
+use std::vec;
 
 #[derive(Parser)]
 #[grammar = "xtql/pest/xtql.pest"]
@@ -79,7 +79,7 @@ pub fn parse_value(pair: Pair<Rule>) -> JSONValue {
         }
         Rule::Unify => fn2(pair, "unify".to_string()),
         Rule::WithUnify | Rule::WithTail => fn2(pair, "with".to_string()),
-        Rule::GroupingVar  => {
+        Rule::GroupingVar => {
             json!({ "xt:lvar": parse_value(pair.into_inner().next().unwrap()) })
         }
         Rule::Rel => {
@@ -112,6 +112,7 @@ pub fn parse_value(pair: Pair<Rule>) -> JSONValue {
             }
             merge_json_objects(vec)
         }
+
         Rule::WithTailMap | Rule::WithUnifyMap | Rule::ReturnMap => {
             let mut map = Map::new();
             let mut inner_pairs = pair.into_inner();
@@ -126,7 +127,7 @@ pub fn parse_value(pair: Pair<Rule>) -> JSONValue {
         }
         Rule::Join => {
             let mut vec = vec![];
-            let query = parse_value(pair.clone().into_inner().next().unwrap());
+            let query = parse_value(pair.into_inner().next().unwrap());
             for inner_pair in pair.into_inner().skip(1) {
                 vec.push(parse_value(inner_pair));
             }
@@ -226,7 +227,7 @@ pub fn parse_value(pair: Pair<Rule>) -> JSONValue {
         Rule::symbol | Rule::string_content => JSONValue::String(pair.as_str().to_string()),
         Rule::F64 | Rule::I64 => {
             let s = pair.as_str().trim(); // why is this needed?
-            
+
             if pair.as_rule() == Rule::F64 {
                 let num: f64 = s.parse().expect("Could not parse the string as f64");
                 json!(num)
