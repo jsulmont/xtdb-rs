@@ -127,7 +127,7 @@ pub fn parse_value(pair: Pair<Rule>) -> JSONValue {
         }
         Rule::Join => {
             let mut vec = vec![];
-            let query = parse_value(pair.into_inner().next().unwrap());
+            let query = parse_value(pair.clone().into_inner().next().unwrap());
             for inner_pair in pair.into_inner().skip(1) {
                 vec.push(parse_value(inner_pair));
             }
