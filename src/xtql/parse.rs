@@ -305,7 +305,15 @@ pub fn parse_value(pair: Pair<Rule>) -> JSONValue {
         Rule::ExistsExpr => fn1(pair, "xt:exists".to_string()),
         Rule::PullManyExpr => fn1(pair, "xt:pullMany".to_string()),
         Rule::SubqueryExpr => fn1(pair, "xt:q".to_string()),
-
+        Rule::UnnestTail | Rule::UnnestUnify => {
+            let expr = parse_value(pair.into_inner().next().unwrap());
+            json!({"unnest": expr})
+        }
+        Rule::UnnestTailSpec | Rule::UnnestUnifySpec => {
+            let column = parse_value(pair.clone().into_inner().next().unwrap());
+            let expr = parse_value(pair.into_inner().nth(1).unwrap());
+            json!({column.as_str().unwrap(): expr})
+        }
         // ArgSpec(s). Note the EBNF (doc) doesn't allow for multiple args, but the grammar does
         Rule::ArgSpec => parse_value(pair.into_inner().next().unwrap()),
         Rule::ArgSpecs => {
