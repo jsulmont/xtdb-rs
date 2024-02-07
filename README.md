@@ -25,7 +25,7 @@ An example of a Common Lisp client using HTTP/Transit+JSON with XTDB is [xtdb-cl
 XTQL is a domain-specific language (DSL) inspired by [Datalog](https://en.wikipedia.org/wiki/Datalog), a declarative logic programming language. XTQL is primarily used with XTDB, offering a unique approach to crafting database queries.
 
 ### TL;DR
-Consider the following (valid albeit meaningless) XTQL expression:
+Consider the following (valid albeit meaningless) XTQL query:
 
 ```clojure
 (rel
@@ -43,7 +43,7 @@ Consider the following (valid albeit meaningless) XTQL expression:
 and try to format and edit the following its JSON counterpart:
 
 ```json
-{"args":[{"x":{"args":[1.77,{"args":[23,{"args":[{"args":[0,{"xt:lvar":"x"}],"xt:call":"="},1,{"xt:lvar":"x"}],"xt:call":"if"}],"xt:call":"-"}],"xt:call":"+"},"y":{"args":[{"args":[{"xt:lvar":"order"}],"xt:call":"order/status"},"pending",{"args":[],"xt:call":"calculate-pending-total"},"completed",{"args":[],"xt:call":"calculate-completed-total"},{"args":[],"xt:call":"aggregate-default-action"}],"xt:call":"case"},"z":{"@type":"xt:instant","@value":"1970-01-01"}},[{"xt:lvar":"x"},{"xt:lvar":"y"}]],"xt:call":"rel"}
+{"bind":[{"x":{"xt:lvar":"x"}},{"y":{"xt:lvar":"y"}}],"rel":{"x":{"args":[1.77,{"args":[23,{"args":[{"args":[0,{"xt:lvar":"x"}],"xt:call":"="},1,{"xt:lvar":"x"}],"xt:call":"if"}],"xt:call":"-"}],"xt:call":"+"},"y":{"args":[{"args":[{"xt:lvar":"order"}],"xt:call":"order/status"},"pending",{"args":[],"xt:call":"calculate-pending-total"},"completed",{"args":[],"xt:call":"calculate-completed-total"},{"args":[],"xt:call":"aggregate-default-action"}],"xt:call":"case"},"z":{"@type":"xt:instant","@value":"1970-01-01"}}}
 ```
 
 
