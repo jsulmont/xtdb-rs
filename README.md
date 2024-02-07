@@ -116,8 +116,7 @@ cat q-tpch/q2.edn| ./xtdb_query
     "s-comment": "x. carefully quiet account",
     "s-name": "Supplier#000000044",
     "s-phone": "17-713-930-5667"
-  },
-  ...
+  }
 ]
 ```
 
