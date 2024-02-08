@@ -4,14 +4,6 @@ members = [
     "client",
 ]
 
-
-# [[example]]
-# name = "query"
-# path = "examples/query.rs"
-
-# [[example]]
-# name = "xtql_json"
-# path = "examples/xtql_json.rs"
-
+resolver = "2"
 
 
