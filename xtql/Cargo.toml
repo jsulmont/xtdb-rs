@@ -17,3 +17,7 @@ wasm-bindgen = "0.2"
 [lib]
 name = "xtql"
 crate-type = ["rlib", "cdylib"]
+
+[[example]]
+name = "xtql_json"
+path = "examples/xtql_json.rs"

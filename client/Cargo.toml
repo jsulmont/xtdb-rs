@@ -16,3 +16,8 @@ serde_json = "1.0"
 
 [lib]
 name = "client"
+
+[[example]]
+name = "query"
+path = "examples/query.rs"
+
