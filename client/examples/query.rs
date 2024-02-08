@@ -1,7 +1,7 @@
+use client::{CustomError, XtdbClient, XtqlQuery};
 use serde_json::{json, Value};
+use xtql::parse_xtql;
 use std::{env, fs, io, io::Read};
-use xtdb_rs::client::{CustomError, XtdbClient, XtqlQuery};
-use xtdb_rs::xtql::parse::parse_xtql;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {

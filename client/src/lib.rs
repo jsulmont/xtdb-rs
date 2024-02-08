@@ -5,6 +5,8 @@ use reqwest::{
 };
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
+use std::error::Error;
+use std::fmt;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 
@@ -13,15 +15,6 @@ pub struct XtqlQuery {
     pub query: Value,
     pub options: Value,
 }
-
-// #[derive(Serialize, Deserialize)]
-// pub
-// struct XtqlResponse {
-//     // Define your Xtdb response structure here
-// }
-
-use std::error::Error;
-use std::fmt;
 
 #[derive(Debug)]
 pub enum CustomError {

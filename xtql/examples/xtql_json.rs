@@ -1,7 +1,8 @@
 // This example demonstrates how to use the parser to parse a simple XTQL query and print the result as JSON.
 use std::io::Read;
 use std::{env, fs, io};
-use xtdb_rs::xtql::parse::parse_xtql;
+use xtql::parse_xtql;
+
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = env::args().collect();

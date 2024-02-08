@@ -2,13 +2,33 @@ use pest::iterators::Pair;
 use pest::Parser;
 use pest_derive::Parser;
 use serde_json::{json, Map, Value as JSONValue};
+use std::ffi::{CStr, CString};
+use std::os::raw::c_char;
 use std::vec;
 
+#[no_mangle]
+pub extern "C" fn free_rust_string(s: *mut c_char) {
+    unsafe {
+        if !s.is_null() {
+            let _ = CString::from_raw(s);
+        }
+    };
+}
+
+#[no_mangle]
+pub extern "C" fn xtql_json_c(input: *const c_char) -> *const c_char {
+    let c_str = unsafe { CStr::from_ptr(input) };
+    let r_str = c_str.to_str().unwrap();
+    let parsed = parse_xtql(r_str).unwrap().to_string();
+    let c_string = CString::new(parsed).unwrap();
+    c_string.into_raw()
+}
+
 #[derive(Parser)]
-#[grammar = "xtql/pest/xtql.pest"]
+#[grammar = "xtql.pest"]
 pub struct XTQLParser;
 
-pub fn parse_xtql(content: &str) -> Result<JSONValue, pest::error::Error<Rule>> {
+pub fn parse_xtql(content: &str) -> Result<JSONValue, Box<pest::error::Error<Rule>>> {
     let xtql = XTQLParser::parse(Rule::Query, content)?.next().unwrap();
     Ok(parse_value(xtql))
 }
