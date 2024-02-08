@@ -1,0 +1,18 @@
+[package]
+name = "xtdb-rs"
+version = "0.1.0"
+edition = "2021"
+authors = ["dev@janks.eu"]
+description = "A Rust client library for XTDB 2.x"
+repository = "https://github.com/jsulmont/xtdb-rs"
+license = "MIT"
+
+[dependencies]
+xtql = { path = "../xtql" }
+tokio = { version = "1", features = ["full"] }
+reqwest = { version = "0.11", features = ["json", "stream"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1.0"
+
+[lib]
+name = "client"

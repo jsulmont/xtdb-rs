@@ -5,7 +5,7 @@ use serde_json::{json, Map, Value as JSONValue};
 use std::vec;
 
 #[derive(Parser)]
-#[grammar = "xtql/pest/xtql.pest"]
+#[grammar = "xtql.pest"]
 pub struct XTQLParser;
 
 pub fn parse_xtql(content: &str) -> Result<JSONValue, pest::error::Error<Rule>> {
