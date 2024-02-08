@@ -5,6 +5,7 @@ use serde_json::{json, Map, Value as JSONValue};
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
 use std::vec;
+use wasm_bindgen::prelude::*;
 
 #[no_mangle]
 pub extern "C" fn free_rust_string(s: *mut c_char) {
@@ -22,6 +23,16 @@ pub extern "C" fn xtql_json_c(input: *const c_char) -> *const c_char {
     let parsed = parse_xtql(r_str).unwrap().to_string();
     let c_string = CString::new(parsed).unwrap();
     c_string.into_raw()
+}
+
+#[wasm_bindgen]
+pub fn parse_xtql_to_json(content: &str) -> Result<String, JsValue> {
+    match parse_xtql(content) {
+        Ok(json_value) => {
+            serde_json::to_string(&json_value).map_err(|e| JsValue::from_str(&e.to_string()))
+        }
+        Err(e) => Err(JsValue::from_str(&e.to_string())),
+    }
 }
 
 #[derive(Parser)]

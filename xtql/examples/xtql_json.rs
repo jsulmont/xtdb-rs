@@ -3,7 +3,6 @@ use std::io::Read;
 use std::{env, fs, io};
 use xtql::parse_xtql;
 
-
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = env::args().collect();
     let content = if args.len() == 2 {

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Wasm and JSON</title>
+    <script type="module">
+        import init, { parse_xtql_to_json } from './pkg/xtql.js';
+        async function run() {
+            await init();
+
+            try {
+                const xtqlQuery = '(-> (unify (from :part [#:xt{:id p} p-mfgr {:p-size 15} p-type]) (where (like p-type "%BRASS")) (from :partsupp [{:ps-partkey p, :ps-suppkey s} ps-supplycost]) (from :supplier [{:xt/id s, :s-nationkey n} s-acctbal s-address s-name s-phone s-comment]) (from :nation [{:xt/id n, :n-regionkey r} n-name]) (from :region [{:xt/id r, :r-name "EUROPE"}]) (where (= ps-supplycost (q (-> (unify (from :partsupp [{:ps-partkey $p, :ps-suppkey s} ps-supplycost]) (from :supplier [{:xt/id s, :s-nationkey n}]) (from :nation [{:xt/id n, :n-regionkey r}]) (from :region [{:xt/id r, :r-name "EUROPE"}])) (aggregate {:min-supplycost (min ps-supplycost)})) {:args [p]})))) (order-by {:val s-acctbal, :dir :desc} n-name s-name p) (limit 100))'
+                const jsonString = parse_xtql_to_json(xtqlQuery);
+                const jsonObject = JSON.parse(jsonString);
+                alert(jsonObject.response);
+                document.getElementById("jsonOutput").innerText = jsonString;
+                console.log("Parsed JSON:", jsonString);                
+            } catch (error) {
+                console.error("Error parsing XTQL:", error);             
+            }
+        }
+
+        run();
+
+    </script>
+</head>
+
+<body>
+    <h1>JSON from Rust</h1>
+    <pre id="jsonOutput"></pre> <!-- Display JSON here -->
+</body>
+
+</html>
